@@ -1,0 +1,343 @@
+HuntPanel < MiniPanel
+  id: huntPanel
+  image-source: /images/ui/minipanel
+  image-border: 2
+  image-border-top: 19
+  width: 200
+  height: 550
+  color: green
+  text: Recommended
+
+  Panel
+    id: centeredImage
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: -235
+    width: 48
+    height: 48
+    fillMode: Image.PreserveAspectFit
+
+  Label
+    id: spotName
+    anchors.top: centeredImage.bottom
+    anchors.left: parent.left
+    margin-top: 10
+    width: 180
+    text: Ankrahmun Cave Rats
+
+  Label
+    id: hasTask
+    anchors.top: parent.top
+    anchors.left: parent.left
+    font: cipsoftFont
+    anchors.centerIn: parent
+    margin-top: -177
+    color: green
+    text: Task available
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 100
+
+  Label
+    id: profitTitle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: -145
+    text: Profit
+
+  Label
+    id: expLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    font: cipsoftFont
+    margin-top: 130
+    margin-left: 20
+    text: Experience
+
+  Panel
+    id: expImage
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: expLabel
+    margin-top: 10
+    width: 50
+    height: 10
+    fillMode: Image.PreserveAspectFit
+
+  Label
+    id: lootLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    font: cipsoftFont
+    margin-top: 130
+    margin-left: 125
+    text: Loot
+
+  Panel
+    id: lootImage
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: lootLabel
+    margin-top: 10
+    width: 50
+    height: 10
+    fillMode: Image.PreserveAspectFit
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 160
+
+  Label
+    id: reqTitle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: -85
+    text: Requirements
+
+  Label
+    id: levelLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    font: cipsoftFont
+    margin-top: 190
+    margin-left: 20
+    text: Level
+
+  Label
+    id: reqLevel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 200
+    margin-left: 20
+    width: 40
+    text: 8
+
+  Label
+    id: skillsLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    font: cipsoftFont
+    margin-top: 190
+    margin-left: 125
+    text: Skills
+
+  Label
+    id: reqSkills
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 200
+    margin-left: 125
+    width: 40
+    text: 10/10
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 230
+
+  Label
+    id: creatureTitle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: -15
+    text: Creatures
+
+  ScrollablePanel
+    id: creatureList
+    anchors.top: creatureTitle.bottom
+    anchors.left: parent.left
+    image-source: /images/ui/panel_flat
+    image-border: 1
+    margin-top: 5
+    margin-left: 3
+    width: 180
+    height: 50
+    horizontal-scrollbar: creatureScroll
+    layout:
+      type: grid
+      cell-size: 48 48
+      cell-spacing: 2
+      flow: true
+
+  HorizontalScrollBar
+    id: creatureScroll
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    step: 37
+    pixels-scroll: true
+    visible: false
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 320
+
+  Label
+    id: notableLootTitle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: 75
+    text: Notable Loot
+
+  ScrollablePanel
+    id: notableLoot
+    anchors.top: notableLootTitle.bottom
+    anchors.left: parent.left
+    image-source: /images/ui/panel_flat
+    image-border: 1
+    margin-top: 5
+    margin-left: 3
+    width: 180
+    height: 100
+    padding-top: 5
+    padding-left: 5
+    padding-right: 5
+    padding-bottom: 5
+    horizontal-scrollbar: lootScroll
+    layout:
+      type: grid
+      cell-size: 32 32
+      cell-spacing: 2
+      flow: true
+
+  HorizontalScrollBar
+    id: lootScroll
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    step: 37
+    pixels-scroll: true
+    visible: false
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 460
+
+  Label
+    id: locationLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: 215
+    text: Location
+
+  Button
+    id: markButton
+    anchors.top: locationLabel.bottom
+    anchors.centerIn: locationLabel
+    margin-right: 30
+    margin-top: 25
+    width: 50
+    text: Mark
+    tooltip: Marks the location on your minimap
+    
+  Button
+    id: showButton
+    anchors.top: locationLabel.bottom
+    anchors.centerIn: locationLabel
+    margin-top: 25
+    margin-left: 30
+    width: 50
+    text: Show
+    tooltip: Shows an Image of the Location
+
+
+MiniPanel < Panel
+  text-offset: 0 3
+  text-align: top
+  image-source: /images/ui/minipanel
+  image-border: 2
+  image-border-top: 19
+  padding-left: 7
+  padding-bottom: 7
+  padding-top: 24
+  padding-right: 7
+
+LootItem < Item
+  id: itemSprite
+  virtual: true
+
+CreatureIcon < UICreature
+  id: creature
+    size: 32 32
+    anchors.left: parent.left
+    anchors.top: parent.top
+    phantom: true
+    old-scaling: true
+
+MainWindow
+  size: 870 678
+  id: tasksWindow
+  !text: tr('Hunting Places')
+
+  @onEnter: modules.game_huntHelper.toggleWindow()
+  @onEscape: modules.game_huntHelper.toggleWindow()
+
+  MiniPanel
+    id: listSearch
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 5
+    height: 55
+    text: Filter
+    
+    Button
+      id: sortLevel
+      anchors.right: parent.right
+      text: Level
+      margin-right: 70
+      width: 65
+      color: red
+      @onClick: modules.game_huntHelper.sortByLevel()
+
+    Button
+      id: sortSkills
+      anchors.right: parent.right
+      text: Skills
+      color: red
+      width: 65   
+
+    TextEdit
+      id: search
+      anchors.left: parent.left
+      width: 270
+      placeholder: Search by name
+
+  ScrollablePanel
+    id: spotPanel
+    anchors.top: listSearch.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 5
+    width: 832
+    height: 560
+    horizontal-scrollbar: spotScroll
+    layout:
+      type: horizontalBox
+      spacing: 11
+
+  HorizontalScrollBar
+    id: spotScroll
+    anchors.top: spotPanel.bottom
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    step: 1
+    margin-top: 5
+    pixels-scroll: true

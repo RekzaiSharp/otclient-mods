@@ -1,0 +1,12 @@
+MainWindow
+  size: 654 509
+  id: mapWindow
+  !text: tr('Hunting Map')
+
+  @onEnter: modules.game_huntHelper.toggleMapWindow()
+  @onEscape: modules.game_huntHelper.toggleMapWindow()
+
+  Panel
+    id: mapPanel
+    anchors.fill: parent
+    fillMode: Image.PreserveAspectFit

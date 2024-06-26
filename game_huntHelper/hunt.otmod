@@ -1,0 +1,12 @@
+Module
+  name: game_huntHelper
+  description: Displays places to hunt depending on your level and skills
+  author: Rekzai
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ hunt ]
+  
+  @onLoad: init()
+  @onUnload: terminate()

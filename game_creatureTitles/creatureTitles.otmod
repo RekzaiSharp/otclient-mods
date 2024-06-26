@@ -1,0 +1,11 @@
+Module
+  name: game_creatureTitle
+  description: Displays the Rank of Enemies
+  author: Rekzai
+  website: none
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  scripts: [ creatureTitles.lua ]
+  @onLoad: init()
+  @onUnload: terminate()
