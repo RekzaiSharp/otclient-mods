@@ -1,0 +1,11 @@
+Module
+  name: partyIcons
+  description: Displays the name and an icon of party members on your minimap
+  author: Rekzai
+  website: none
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1001
+  scripts: [ icons.lua ]
+  @onLoad: init()
+  @onUnload: terminate()

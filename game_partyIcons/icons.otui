@@ -1,0 +1,13 @@
+PlayerName < Label
+  id: pName
+  id: spotName
+  width: 80
+  color: #6176ff
+  font: verdana-11px-rounded
+  text-align: center
+  text: Rekzai
+
+PlayerIcon < UIWidget
+  focusable: false
+  phantom: true
+  size: 21 21
