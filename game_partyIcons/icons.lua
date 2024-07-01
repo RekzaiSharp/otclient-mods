@@ -2,14 +2,8 @@ local OPCODE_POSITION = 136
 local minimap = modules.game_minimap
 local minimapWidget = nil
 
-
--- dirty code, needs to be one table and icons should be children of the name labels
-local partyNames = {
-}
-
-local partyIcons = {
-
-}
+-- Table for storing party members widgets
+local partyMembers = {}
 
 function init()
   connect(LocalPlayer, {
@@ -33,32 +27,16 @@ end
 function onSendPosition()
   local player = g_game.getLocalPlayer()
   if not player:isPartyMember() then
-    for name, widget in pairs(partyNames) do
+    for name, widget in pairs(partyMembers) do
       widget:destroy()
-      partyNames[name] = nil
-    end
-
-    for name, widget in pairs(partyIcons) do
-      widget:destroy()
-      partyNames[name] = nil
+      partyMembers[name] = nil
     end
     return
   end
-  
-  -- we don't need to send the server anything besides an empty packet so this is obsolete
-  local position = player:getPosition()
-  
-  local opcodeData = {
-    x = position.x,
-    y = position.y,
-    z = position.z
-  }
-  
-  local opcodeString = json.encode(opcodeData)
-  
+
   local protocolGame = g_game.getProtocolGame()
   if protocolGame then
-    protocolGame:sendExtendedOpcode(OPCODE_POSITION, opcodeString)
+    protocolGame:sendExtendedOpcode(OPCODE_POSITION)
   else
     print("Error: ProtocolGame instance not found.")
   end
@@ -98,7 +76,7 @@ end
 
 -- needs a bit of refactoring
 function displayPartyMembers(data)
-  for name, widget in pairs(partyNames) do
+  for name, widget in pairs(partyMembers) do
     local found = false
     for _, member in pairs(data) do
       if member.name == name then
@@ -109,28 +87,24 @@ function displayPartyMembers(data)
 
     if not found then
       widget:destroy()
-      partyNames[name] = nil
+      partyMembers[name] = nil
     end
   end
 
   for _, member in pairs(data) do
     if g_game.getLocalPlayer():getName() ~= member.name then
-      if not partyNames[member.name] then
-        local widget = g_ui.createWidget("PlayerName", minimapWidget)
-        local icon = g_ui.createWidget("PlayerIcon", minimapWidget)
-        icon:setImageSource(getIconByVocation(member.vocation))
-        widget:setText(member.name)
-        partyNames[member.name] = widget
-        partyIcons[member.name] = icon
+      if not partyMembers[member.name] then
+        local widget = g_ui.createWidget("PlayerIcon", minimapWidget)
+        widget:setImageSource(getIconByVocation(member.vocation))
+        widget.name:setText(member.name)
+        partyMembers[member.name] = widget
       else
-        local widget = partyNames[member.name]
+        local widget = partyMembers[member.name]
         local pos = member.pos
         pos.z = minimapWidget:getCameraPosition().z
         minimapWidget:centerInPosition(widget, member.pos)
-        widget:setMarginTop(-15)
-  
-        local icon = partyIcons[member.name]
-        minimapWidget:centerInPosition(icon, member.pos)
+        widget.name:setMarginTop(-15)
+        minimapWidget:centerInPosition(widget.name, member.pos)
       end
     end
   end

@@ -8,6 +8,7 @@ local sortedData = nil
 local huntButton
 
 local sortByLevelButtonPressed = false
+local sortBySkillButtonPressed = false
 
 function init()
     connect(g_game, {
@@ -117,12 +118,6 @@ function onRecieveHuntingPlaces(protocol, opcode, buffer)
     end
 
     sortAndFillSpots(data)
-
-   -- window.huntPanel.centeredImage:setImageSource("img/normal")
-    --window.huntPanel.expImage:setImageSource("img/stars/2")
-    --window.huntPanel.expImage:setWidth(20)
-    --window.huntPanel.lootImage:setImageSource("img/stars/1")
-    --window.huntPanel.lootImage:setWidth(10)
 end
 
 function getVocationById(id)
@@ -179,7 +174,6 @@ function onFilterSearch()
         local spot = entry.spot
         if spot.creatures and type(spot.creatures) == "table" then
             for _, creature in ipairs(spot.creatures) do
-                -- Check if the creature name starts with the input string
                 if creature.name:lower():sub(1, #creatureString) == creatureString then
                     table.insert(filteredSpots, entry)
                     break
@@ -202,18 +196,15 @@ function sortAndFillSpots(data)
     local sortedSpots = {}
 
     for name, spot in pairs(data.info) do
-        -- Check if the recommended table has the vocation
         if spot.recommended[vocation] then
             table.insert(sortedSpots, {name = name, spot = spot})
         end
     end
 
     table.sort(sortedSpots, function(a, b)
-        -- Since we now only include spots with the vocation, this check is safe
         return a.spot.recommended[vocation].level < b.spot.recommended[vocation].level
     end)
 
-    -- Correctly use sortedSpots for sortedData
     sortedData = {player = data.player, info = sortedSpots}
     fillSpots(sortedData)
 end
@@ -242,6 +233,40 @@ function sortByLevel()
     else
         window.listSearch.sortLevel:setColor("red")
         fillSpots(sortedData)
+    end
+end
+
+function sortBySkills()
+    sortBySkillButtonPressed = not sortBySkillButtonPressed
+
+    if sortBySkillButtonPressed then
+        window.listSearch.sortSkills:setColor("green")
+        local playerLevel = sortedData.player.level
+        local playerSkill = sortedData.player.skill
+        local filteredSpots = {}
+
+        for _, entry in ipairs(sortedData.info) do
+            local spot = entry.spot
+            local recommendedLevel = spot.recommended[getVocationById(sortedData.player.vocation)].level
+            local recommendedSkills = spot.recommended[getVocationById(sortedData.player.vocation)].skill
+            local minLevel = math.floor(playerLevel * 0.8)
+            local maxLevel = math.ceil(playerLevel * 1.2)
+
+            if recommendedLevel >= minLevel and recommendedLevel <= maxLevel and recommendedSkills <= playerSkill then
+                table.insert(filteredSpots, entry)
+            end
+        end
+
+        local filteredData = {player = sortedData.player, info = filteredSpots}
+        fillSpots(filteredData)
+    else
+        window.listSearch.sortSkills:setColor("red")
+        fillSpots(sortedData)
+    end
+
+    if sortByLevelButtonPressed then
+        sortByLevelButtonPressed = false
+        window.listSearch.sortLevel:setColor("red")
     end
 end
 

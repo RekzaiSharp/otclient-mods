@@ -311,7 +311,8 @@ MainWindow
       anchors.right: parent.right
       text: Skills
       color: red
-      width: 65   
+      width: 65
+      @onClick: modules.game_huntHelper.sortBySkills()
 
     TextEdit
       id: search
