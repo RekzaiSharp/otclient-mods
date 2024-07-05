@@ -1,4 +1,5 @@
-local OPCODE_POSITION = 136
+local OPCODE_PARTY = 160
+
 local minimap = modules.game_minimap
 local minimapWidget = nil
 
@@ -6,106 +7,88 @@ local minimapWidget = nil
 local partyMembers = {}
 
 function init()
-  connect(LocalPlayer, {
-    onPositionChange = onSendPosition,
-  })
-
+  print("Party Icons Loaded")
   g_ui.displayUI('icons')
   minimapWidget = minimap.minimapWindow:recursiveGetChildById('minimap')
-  ProtocolGame.registerExtendedOpcode(OPCODE_POSITION, onExtendedOpcode)
+  ProtocolGame.registerExtendedOpcode(OPCODE_PARTY, onPartyUpdate)
 end
   
 function terminate()
-  disconnect(LocalPlayer, {
-    onPositionChange = onSendPosition,
-  })  
-
-  ProtocolGame.unregisterExtendedOpcode(OPCODE_POSITION, onExtendedOpcode)
+  ProtocolGame.unregisterExtendedOpcode(OPCODE_PARTY, onPartyUpdate)
 end
 
-
-function onSendPosition()
-  local player = g_game.getLocalPlayer()
-  if not player:isPartyMember() then
-    for name, widget in pairs(partyMembers) do
-      widget:destroy()
-      partyMembers[name] = nil
-    end
-    return
-  end
-
-  local protocolGame = g_game.getProtocolGame()
-  if protocolGame then
-    protocolGame:sendExtendedOpcode(OPCODE_POSITION)
-  else
-    print("Error: ProtocolGame instance not found.")
-  end
-end
-
-function onExtendedOpcode(protocol, code, buffer)
-  local status, data =
-        pcall(
-            function()
-                return json.decode(buffer)
-            end
-        )
-
-    if not status then
-        return false
-    end
-
-    displayPartyMembers(data)
-end
-
--- needs to be changed to take client vocation id instead of server vocation name
 function getIconByVocation(vocation)
-  if vocation == "None" then
+  if vocation == 0 then
     return "icons/None"
-  elseif vocation == "Knight" then
+  elseif vocation == 1 then
     return "icons/Knight"
-  elseif vocation == "Paladin" then
+  elseif vocation == 2 then
     return "icons/Paladin" 
-  elseif vocation == "Druid" then
+  elseif vocation == 3 then
     return "icons/Druid"
-  elseif vocation == "Sorcerer" then
+  elseif vocation == 4 then
     return "icons/Sorcerer"
   else
     return "icons/None"
   end
 end
 
--- needs a bit of refactoring
-function displayPartyMembers(data)
-  for name, widget in pairs(partyMembers) do
-    local found = false
-    for _, member in pairs(data) do
-      if member.name == name then
-        found = true
-        break
-      end
+function onPartyUpdate(protocol, opcode, buffer)
+  print("OnPartyUpdate Called")
+  local status, data =
+    pcall(
+    function()
+      return json.decode(buffer)
     end
+  )
 
-    if not found then
-      widget:destroy()
-      partyMembers[name] = nil
-    end
+  if not status then
+      return false
   end
 
-  for _, member in pairs(data) do
-    if g_game.getLocalPlayer():getName() ~= member.name then
-      if not partyMembers[member.name] then
-        local widget = g_ui.createWidget("PlayerIcon", minimapWidget)
-        widget:setImageSource(getIconByVocation(member.vocation))
-        widget.name:setText(member.name)
-        partyMembers[member.name] = widget
-      else
-        local widget = partyMembers[member.name]
-        local pos = member.pos
+  if (data.type == "join") then
+    for _, member in pairs(data.members) do
+      print(member.name)
+      if (member.name ~= g_game.getLocalPlayer():getName()) then
+        if not partyMembers[member.name] then
+          local widget = g_ui.createWidget("PlayerIcon", minimapWidget)
+          widget:setImageSource(getIconByVocation(member.vocation))
+          widget.name:setText(member.name)
+          partyMembers[member.name] = widget
+          minimapWidget:centerInPosition(widget, member.pos)
+          widget.name:setMarginTop(-15)
+          minimapWidget:centerInPosition(widget.name, member.pos)
+        end
+      end
+    end
+    return
+  end
+
+
+  if (data.type == "update") then
+    if partyMembers[data.player.name] then
+        local widget = partyMembers[data.player.name]
+        local pos = data.player.pos
         pos.z = minimapWidget:getCameraPosition().z
-        minimapWidget:centerInPosition(widget, member.pos)
+        minimapWidget:centerInPosition(widget, data.player.pos)
         widget.name:setMarginTop(-15)
-        minimapWidget:centerInPosition(widget.name, member.pos)
+        minimapWidget:centerInPosition(widget.name, data.player.pos)
+    end
+    return
+  end
+
+  if (data.type == "leave") then
+    if (data.name == g_game.getLocalPlayer():getName()) then
+      for _, member in pairs(partyMembers) do
+        member:destroy()
       end
+      partyMembers = {}
+    end
+  else
+    if partyMembers[data.name] then
+      partyMembers[data.name]:destroy()
+      partyMembers[data.name] = nil
     end
   end
+  return
 end
