@@ -16,6 +16,7 @@ There are still a few functions missing such as creating a mark on the minimap, 
 
 ## Minimap Party Icons
 This module helps you keep track of your party members by showing them on the minimap.</br>
+Please check the wiki https://github.com/RekzaiSharp/otclient-mods/wiki for more information on how to install this module.
 
 ![image](https://github.com/RekzaiSharp/otclient-mods/assets/12533421/9cf54534-e8e4-4493-b6b4-33d112430a81)
 
